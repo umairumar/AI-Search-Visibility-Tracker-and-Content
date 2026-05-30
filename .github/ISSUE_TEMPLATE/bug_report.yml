@@ -1,0 +1,78 @@
+name: Bug Report
+description: Something isn't working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. The more detail you provide, the faster it gets fixed.
+        Before submitting, check [existing issues](https://github.com/aryamantodkar/oneglanse/issues) to avoid duplicates.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Web app (UI / dashboard)
+        - Agent / browser automation
+        - Provider auth (pnpm auth)
+        - Response analysis (LLM)
+        - Self-host / Docker / VPS
+        - Docs
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: setup
+    attributes:
+      label: Setup path
+      options:
+        - Local (pnpm local)
+        - Self-host (VPS / Docker)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or errors
+      description: Set `DEBUG_ENABLED=true` in `.env` for verbose agent output. Paste any relevant output here.
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, drag and drop screenshots here.
+
+  - type: input
+    id: version
+    attributes:
+      label: OneGlanse version or commit
+      placeholder: e.g. main @ a1b2c3d
+
+  - type: input
+    id: os
+    attributes:
+      label: OS + Node.js version
+      placeholder: e.g. macOS 15.2, Node 22.3

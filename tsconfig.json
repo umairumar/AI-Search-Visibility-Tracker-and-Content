@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"strict": true,
+		"skipLibCheck": true,
+		"noUncheckedIndexedAccess": true,
+
+		/* Typechecking only */
+		"noEmit": true,
+		"baseUrl": ".",
+		"paths": {
+			"@oneglanse/*": ["packages/*/src", "packages/*/dist"],
+			"playwright": ["apps/agent/src/lib/browser/runtimeTypes.ts"]
+		}
+	},
+	"references": [
+		{ "path": "packages/types" },
+		{ "path": "packages/errors" },
+		{ "path": "packages/utils" },
+		{ "path": "packages/db" },
+		{ "path": "packages/services" },
+		{ "path": "packages/ui" },
+		{ "path": "apps/agent" }
+	]
+}

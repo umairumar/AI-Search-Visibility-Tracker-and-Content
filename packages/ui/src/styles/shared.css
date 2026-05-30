@@ -1,0 +1,87 @@
+:root {
+	--app-radius: 1rem;
+	--motion-duration-fast: 140ms;
+	--motion-duration-base: 180ms;
+	--motion-duration-slow: 260ms;
+	--motion-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+	--elevation-soft: 0 12px 30px oklch(0 0 0 / 8%);
+}
+
+.dark {
+	--elevation-soft: 0 14px 36px oklch(0 0 0 / 30%);
+}
+
+@layer base {
+	[data-slot="button"],
+	[data-slot="card"],
+	[data-slot="input"],
+	[data-slot="textarea"],
+	[data-slot="table-row"],
+	[data-slot="select-trigger"],
+	[data-slot="sidebar-menu-button"],
+	[data-slot="sidebar-menu-sub-button"],
+	[data-slot="dropdown-menu-item"],
+	[data-slot="select-item"],
+	[data-slot="tabs-trigger"] {
+		transition-timing-function: var(--motion-ease-standard);
+	}
+
+	[data-slot="button"]:not(:disabled),
+	[data-slot="sidebar-menu-button"],
+	[data-slot="sidebar-menu-sub-button"] {
+		transform: translateZ(0);
+	}
+}
+
+@layer components {
+	.ui-page-enter {
+		animation: none;
+	}
+
+	.ui-stagger > * {
+		opacity: 1;
+		animation: none;
+	}
+
+	.ui-list-item {
+		transition: box-shadow var(--motion-duration-base)
+			var(--motion-ease-standard), border-color var(--motion-duration-fast)
+			var(--motion-ease-standard), background-color var(--motion-duration-fast)
+			var(--motion-ease-standard);
+	}
+}
+
+@media (hover: hover) and (pointer: fine) {
+	[data-slot="card"]:hover {
+		box-shadow: var(--elevation-soft);
+	}
+
+	[data-slot="input"]:not(:disabled):hover,
+	[data-slot="textarea"]:not(:disabled):hover,
+	[data-slot="select-trigger"]:not([data-disabled]):hover {
+		border-color: color-mix(in oklch, var(--ring) 45%, var(--border));
+	}
+
+	[data-slot="dropdown-menu-item"]:not([data-disabled]):hover,
+	[data-slot="dropdown-menu-checkbox-item"]:not([data-disabled]):hover,
+	[data-slot="dropdown-menu-radio-item"]:not([data-disabled]):hover,
+	[data-slot="dropdown-menu-sub-trigger"]:not([data-disabled]):hover,
+	[data-slot="select-item"]:not([data-disabled]):hover,
+	[data-slot="tabs-trigger"]:not(:disabled):hover,
+	[data-slot="sidebar-menu-button"]:not(:disabled):hover,
+	[data-slot="sidebar-menu-sub-button"]:not(:disabled):hover {
+		box-shadow: 0 8px 20px -18px oklch(0 0 0 / 18%);
+	}
+
+	.ui-list-item:hover {
+		box-shadow: var(--elevation-soft);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ui-page-enter,
+	.ui-stagger > * {
+		animation: none;
+		opacity: 1;
+	}
+}

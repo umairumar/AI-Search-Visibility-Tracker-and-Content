@@ -1,0 +1,250 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@oneglanse/ui/styles/shared.css";
+
+@plugin "@tailwindcss/typography";
+
+/* Scan UI package for Tailwind classes (required for monorepo in Tailwind v4) */
+@source "../../../../packages/ui/src";
+@source "../../../../packages/ui/dist";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+	--font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@theme inline {
+	--radius-sm: var(--app-radius);
+	--radius-md: var(--app-radius);
+	--radius-lg: var(--app-radius);
+	--radius-xl: var(--app-radius);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-chart-1: var(--chart-1);
+	--color-chart-2: var(--chart-2);
+	--color-chart-3: var(--chart-3);
+	--color-chart-4: var(--chart-4);
+	--color-chart-5: var(--chart-5);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+	--app-radius: 1rem;
+	--radius: var(--app-radius);
+	--background: oklch(1 0 0);
+	--foreground: oklch(0.147 0.004 49.25);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.147 0.004 49.25);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.147 0.004 49.25);
+	--primary: oklch(0.216 0.006 56.043);
+	--primary-foreground: oklch(0.985 0.001 106.423);
+	--secondary: oklch(0.97 0.001 106.424);
+	--secondary-foreground: oklch(0.216 0.006 56.043);
+	--muted: oklch(0.97 0.001 106.424);
+	--muted-foreground: oklch(0.553 0.013 58.071);
+	--accent: oklch(0.97 0.001 106.424);
+	--accent-foreground: oklch(0.216 0.006 56.043);
+	--destructive: oklch(0.577 0.245 27.325);
+	--border: oklch(0.923 0.003 48.717);
+	--input: oklch(0.923 0.003 48.717);
+	--ring: oklch(0.709 0.01 56.259);
+	--chart-1: oklch(0.646 0.222 41.116);
+	--chart-2: oklch(0.6 0.118 184.704);
+	--chart-3: oklch(0.398 0.07 227.392);
+	--chart-4: oklch(0.828 0.189 84.429);
+	--chart-5: oklch(0.769 0.188 70.08);
+	--sidebar: oklch(0.985 0.001 106.423);
+	--sidebar-foreground: oklch(0.147 0.004 49.25);
+	--sidebar-primary: oklch(0.216 0.006 56.043);
+	--sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+	--sidebar-accent: oklch(0.97 0.001 106.424);
+	--sidebar-accent-foreground: oklch(0.216 0.006 56.043);
+	--sidebar-border: oklch(0.923 0.003 48.717);
+	--sidebar-ring: oklch(0.709 0.01 56.259);
+}
+
+.dark {
+	--background: oklch(0.147 0.004 49.25);
+	--foreground: oklch(0.985 0.001 106.423);
+	--card: oklch(0.216 0.006 56.043);
+	--card-foreground: oklch(0.985 0.001 106.423);
+	--popover: oklch(0.216 0.006 56.043);
+	--popover-foreground: oklch(0.985 0.001 106.423);
+	--primary: oklch(0.923 0.003 48.717);
+	--primary-foreground: oklch(0.216 0.006 56.043);
+	--secondary: oklch(0.268 0.007 34.298);
+	--secondary-foreground: oklch(0.985 0.001 106.423);
+	--muted: oklch(0.268 0.007 34.298);
+	--muted-foreground: oklch(0.709 0.01 56.259);
+	--accent: oklch(0.268 0.007 34.298);
+	--accent-foreground: oklch(0.985 0.001 106.423);
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.553 0.013 58.071);
+	--chart-1: oklch(0.488 0.243 264.376);
+	--chart-2: oklch(0.696 0.17 162.48);
+	--chart-3: oklch(0.769 0.188 70.08);
+	--chart-4: oklch(0.627 0.265 303.9);
+	--chart-5: oklch(0.645 0.246 16.439);
+	--sidebar: oklch(0.216 0.006 56.043);
+	--sidebar-foreground: oklch(0.985 0.001 106.423);
+	--sidebar-primary: oklch(0.488 0.243 264.376);
+	--sidebar-primary-foreground: oklch(0.985 0.001 106.423);
+	--sidebar-accent: oklch(0.268 0.007 34.298);
+	--sidebar-accent-foreground: oklch(0.985 0.001 106.423);
+	--sidebar-border: oklch(1 0 0 / 10%);
+	--sidebar-ring: oklch(0.553 0.013 58.071);
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6,
+	.section-title,
+	[data-slot="dialog-title"],
+	button,
+	[role="button"],
+	[data-slot="button"] {
+		text-transform: capitalize;
+	}
+
+	html {
+		font-family: var(--font-sans);
+		min-height: 100%;
+		overflow-x: clip;
+	}
+	body {
+		@apply bg-background text-foreground;
+		font-size: 1rem; /* 16px base - standard browser default */
+		line-height: 1.5;
+		min-height: 100svh;
+		overflow-x: clip;
+	}
+
+	body[data-scroll-locked] {
+		padding-right: 0 !important;
+		margin-right: 0 !important;
+	}
+
+	*:focus,
+	*:focus-visible {
+		outline: none;
+	}
+}
+
+@layer base {
+	:root {
+		--sidebar: oklch(0.955 0.004 84);
+		--sidebar-foreground: oklch(0.145 0 0);
+		--sidebar-primary: oklch(0.205 0 0);
+		--sidebar-primary-foreground: oklch(1 0 0);
+		--sidebar-accent: oklch(0.985 0.001 106.423);
+		--sidebar-accent-foreground: oklch(0.205 0 0);
+		--sidebar-border: oklch(0.922 0 0);
+		--sidebar-ring: oklch(0.708 0 0);
+	}
+
+	.dark {
+		--sidebar: oklch(0.235 0.004 49.25);
+		--sidebar-foreground: oklch(0.985 0 0);
+		--sidebar-primary: oklch(0.488 0.243 264.376);
+		--sidebar-primary-foreground: oklch(0.985 0 0);
+		--sidebar-accent: oklch(0.285 0.006 49.25);
+		--sidebar-accent-foreground: oklch(0.985 0 0);
+		--sidebar-border: oklch(1 0 0 / 10%);
+		--sidebar-ring: oklch(0.439 0 0);
+	}
+}
+
+@layer components {
+	.web-app-shell {
+		@apply flex h-svh w-full min-w-0 overflow-hidden bg-stone-50 dark:bg-neutral-950;
+	}
+
+	.web-app-main {
+		@apply relative flex h-full min-w-0 flex-1 flex-col overflow-hidden bg-stone-50/80 dark:bg-neutral-950;
+	}
+
+	.web-app-header {
+		@apply sticky top-0 z-20 flex items-center gap-2 border-b border-gray-200/60 bg-stone-50/95 px-3 py-2.5 backdrop-blur-sm dark:border-white/8 dark:bg-neutral-950/95 sm:px-4 sm:py-3 lg:px-5;
+	}
+
+	.web-app-scroll {
+		@apply flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden bg-stone-50 dark:bg-neutral-950;
+		overscroll-behavior-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.web-page-wide {
+		@apply min-h-full min-w-0 overflow-x-hidden bg-stone-50 dark:bg-neutral-950;
+	}
+
+	.web-page-wide-inner {
+		@apply mx-auto w-full min-w-0 max-w-[1080px] px-4 pt-4 pb-8 sm:px-7 sm:pt-6 sm:pb-10 lg:px-10;
+	}
+
+	.web-page-panel {
+		@apply mx-auto min-h-full w-full min-w-0 max-w-[880px] space-y-3 px-4 pt-4 pb-8 sm:space-y-3.5 sm:px-7 sm:pt-6 sm:pb-10 lg:space-y-4 lg:px-10 lg:pt-7 lg:pb-12;
+	}
+
+	.web-page-panel > * {
+		opacity: 1;
+		animation: none;
+	}
+
+	.web-centered-page {
+		@apply flex min-h-full min-w-0 items-center justify-center overflow-x-hidden bg-stone-50 px-4 pt-5 pb-9 dark:bg-neutral-950 sm:px-8 sm:pt-7 sm:pb-11 lg:px-10;
+	}
+
+	.web-centered-state {
+		@apply flex h-full min-h-0 w-full min-w-0 flex-1 items-center justify-center overflow-x-hidden px-4 py-4 sm:px-8 sm:py-6 lg:px-10;
+	}
+
+	.web-empty-state {
+		@apply mx-auto flex min-h-[208px] w-full max-w-[15rem] flex-col items-center justify-center rounded-[var(--app-radius)] border border-gray-100/80 bg-white px-4 py-4 text-center shadow-[0_20px_60px_-32px_rgba(15,23,42,0.18)] dark:border-gray-800 dark:bg-neutral-950 dark:shadow-[0_20px_60px_-32px_rgba(0,0,0,0.55)] sm:min-h-[220px] sm:max-w-[16rem] sm:px-4.5 sm:py-4.5 xl:min-h-[236px] xl:max-w-[17rem] xl:rounded-[var(--app-radius)] xl:px-5 xl:py-5;
+	}
+
+	.web-empty-state-icon {
+		@apply hidden;
+	}
+
+	.web-touch-scroll {
+		@apply overflow-x-auto;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior-x: contain;
+	}
+}
