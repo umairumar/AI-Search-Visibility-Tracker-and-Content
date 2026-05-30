@@ -130,3 +130,17 @@ export async function updateWorkspaceSelectedPrompts(args: {
 
 	return { selectedPromptIds };
 }
+
+export async function updateAutoPilotEnabled(args: {
+	workspaceId: string;
+	autoPilotEnabled: boolean;
+}): Promise<{ autoPilotEnabled: boolean }> {
+	const { workspaceId, autoPilotEnabled } = args;
+
+	await db
+		.update(schema.workspaces)
+		.set({ autoPilotEnabled })
+		.where(eq(schema.workspaces.id, workspaceId));
+
+	return { autoPilotEnabled };
+}

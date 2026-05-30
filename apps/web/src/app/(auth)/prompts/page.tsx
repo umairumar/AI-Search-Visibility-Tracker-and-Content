@@ -2,6 +2,10 @@
 
 import { ExportMenu } from "@/components/export-menu";
 import {
+	GenerateGeoFixButton,
+	needsGeoFixArticle,
+} from "@/components/autopilot/generate-geo-fix-button";
+import {
 	formDialogBodyClassName,
 	formDialogContentClassName,
 	formDialogFieldGroupClassName,
@@ -1153,6 +1157,9 @@ export default function Prompts() {
 											</SortableHeader>
 										</div>
 									</TableHead>
+									<TableHead className="px-2 py-4 text-right font-medium text-gray-500 text-xs whitespace-nowrap dark:text-gray-400 sm:px-4 sm:text-sm">
+										Action
+									</TableHead>
 								</TableRow>
 							</TableHeader>
 
@@ -1184,7 +1191,7 @@ export default function Prompts() {
 											{!metrics ? (
 												<TableCell
 													className="px-3 py-5 text-center text-gray-400 text-sm dark:text-gray-500 sm:px-6"
-													colSpan={5}
+													colSpan={4}
 												>
 													<span className="italic">
 														{reason === "no-responses"
@@ -1237,6 +1244,18 @@ export default function Prompts() {
 													</TableCell>
 												</>
 											)}
+
+											<TableCell
+												className="px-2 py-5 text-right align-top sm:px-4"
+												onClick={(event) => event.stopPropagation()}
+											>
+												{needsGeoFixArticle({ reason, metrics }) ? (
+													<GenerateGeoFixButton
+														workspaceId={workspaceId}
+														keywordId={prompt.id}
+													/>
+												) : null}
+											</TableCell>
 										</TableRow>
 									),
 								)}

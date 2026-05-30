@@ -42,6 +42,7 @@ import {
 	Plug,
 	Plus,
 	Settings,
+	Sparkles,
 	User2,
 	UserPlus,
 	Users,
@@ -135,6 +136,12 @@ export function AppSidebar({
 		title: "Schedule",
 		url: `/schedule?workspace=${activeWorkspace?.id ?? ""}`,
 		icon: Clock,
+	});
+
+	generalItems.push({
+		title: "Autopilot",
+		url: `/autopilot?workspace=${activeWorkspace?.id ?? ""}`,
+		icon: Sparkles,
 	});
 
 	const settingsItems = [

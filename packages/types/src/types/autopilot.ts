@@ -56,3 +56,15 @@ export type SubmitContentGenerationResult =
 	| { status: "queued"; jobId: string; articleId: string }
 	| { status: "already_queued"; articleId: string }
 	| { status: "keyword_not_found" };
+
+export type SaveIntegrationInput = {
+	platformType: PlatformType;
+	cmsUrl: string;
+	authToken: string;
+};
+
+export type PublishArticleResult = {
+	articleId: string;
+	platformType: string;
+	externalUrl?: string;
+};

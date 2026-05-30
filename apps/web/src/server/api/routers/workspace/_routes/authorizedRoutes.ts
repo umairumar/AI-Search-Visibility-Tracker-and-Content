@@ -11,6 +11,7 @@ import {
 	updateWorkspaceEnabledProviders,
 	updateWorkspaceSchedule,
 	updateWorkspaceSelectedPrompts,
+	updateAutoPilotEnabled,
 } from "@oneglanse/services";
 import { authorizedWorkspaceProcedure } from "../../../procedures";
 import { parseCronExpressionOrThrow } from "../_helpers/scheduling";
@@ -20,6 +21,7 @@ import {
 	setEnabledProvidersInputSchema,
 	setScheduleInputSchema,
 	setSelectedPromptsInputSchema,
+	setAutoPilotEnabledInputSchema,
 	updateDetailsInputSchema,
 	updateOrganizationNameInputSchema,
 } from "../_schemas";
@@ -142,6 +144,20 @@ export const authorizedWorkspaceRoutes = {
 			return updateWorkspaceSelectedPrompts({
 				workspaceId: ctx.workspaceId,
 				selectedPromptIds: input.selectedPromptIds,
+			});
+		}),
+
+	setAutoPilotEnabled: authorizedWorkspaceProcedure
+		.input(setAutoPilotEnabledInputSchema)
+		.mutation(async ({ ctx, input }) => {
+			if (ctx.membership.role !== "owner") {
+				throw new ValidationError(
+					"Only workspace owners can change autopilot settings.",
+				);
+			}
+			return updateAutoPilotEnabled({
+				workspaceId: ctx.workspaceId,
+				autoPilotEnabled: input.autoPilotEnabled,
 			});
 		}),
 

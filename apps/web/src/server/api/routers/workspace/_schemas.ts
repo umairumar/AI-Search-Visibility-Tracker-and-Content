@@ -51,3 +51,7 @@ export const setEnabledProvidersInputSchema = z.object({
 export const setSelectedPromptsInputSchema = z.object({
 	selectedPromptIds: z.array(z.string()).nullable(),
 });
+
+export const setAutoPilotEnabledInputSchema = z.object({
+	autoPilotEnabled: z.boolean(),
+});
