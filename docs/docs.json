@@ -13,6 +13,7 @@
 			"getting-started",
 			"local-setup",
 			"self-hosted-setup",
+			"vercel-deployment",
 			"environment-variables",
 			"troubleshooting",
 			"api-reference"

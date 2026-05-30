@@ -28,6 +28,8 @@ The public surfaces are deployed separately:
 - `docs.oneglanse.com` (documentation) is deployed on Mintlify
 - the self-host flow in this repo deploys only the app runtime
 
+**Hybrid Vercel deployment:** the web app (`apps/web`) can also run on Vercel while workers and databases live on external services. See [docs/vercel-deployment.mdx](docs/vercel-deployment.mdx) for setup steps, env vars, and worker requirements.
+
 ---
 
 ## Quick Start

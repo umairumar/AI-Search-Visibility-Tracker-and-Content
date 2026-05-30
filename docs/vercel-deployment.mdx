@@ -1,0 +1,257 @@
+---
+title: Vercel Deployment (Hybrid)
+description: Deploy the OneGlanse web app on Vercel while running workers and databases on external services.
+---
+
+This guide covers a **hybrid deployment**: the Next.js web app on Vercel, with Postgres, ClickHouse, Redis, and background workers hosted elsewhere.
+
+Use this when you want a managed frontend/API on Vercel but still need long-running workers that Vercel cannot host.
+
+---
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph vercel [Vercel]
+    Web["apps/web\nNext.js + tRPC"]
+  end
+
+  subgraph data [Managed data]
+    PG[(Neon Postgres)]
+    CH[(ClickHouse Cloud)]
+    Redis[(Upstash Redis)]
+  end
+
+  subgraph workers [Always-on workers]
+    Agent["Agent worker\napps/agent"]
+    Autopilot["Autopilot worker\npnpm start:autopilot-worker"]
+  end
+
+  Web --> PG
+  Web --> CH
+  Web --> Redis
+  Agent --> Redis
+  Agent --> CH
+  Autopilot --> Redis
+  Autopilot --> PG
+  Autopilot --> CH
+```
+
+| Component | Host | Required for |
+|---|---|---|
+| `apps/web` | **Vercel** | UI, tRPC API, auth |
+| Postgres | **Neon** (or Supabase) | Workspaces, auth, autopilot tables |
+| ClickHouse | **ClickHouse Cloud** | Prompts, responses, analysis |
+| Redis | **Upstash** | BullMQ job queues |
+| Agent worker | **Railway / Render / VPS** | AI visibility prompt runs |
+| Autopilot worker | **Railway / Render / VPS** | Content generation jobs |
+
+Vercel alone is **not** enough for full OneGlanse functionality. Without the agent worker, prompt collection does not run. Without the autopilot worker, "Generate GEO Fix Article" jobs stay queued.
+
+For an all-in-one deployment, use [Self-Hosted Setup](/self-hosted-setup) on a VPS instead.
+
+---
+
+## 1. Provision external services
+
+### Postgres (Neon)
+
+1. Create a project at [neon.tech](https://neon.tech).
+2. Copy the pooled connection string → `DATABASE_URL`.
+
+### ClickHouse Cloud
+
+1. Create a service at [clickhouse.cloud](https://clickhouse.cloud).
+2. Run the schema from `packages/db/clickhouse-init/schema.sql` against your cluster.
+3. Set `CLICKHOUSE_URL`, `CLICKHOUSE_USER`, `CLICKHOUSE_PASSWORD`, and `CLICKHOUSE_DB`.
+
+### Redis (Upstash)
+
+1. Create a database at [upstash.com](https://upstash.com).
+2. Map Upstash credentials to OneGlanse env vars:
+
+| Upstash field | OneGlanse variable |
+|---|---|
+| Endpoint host | `REDIS_HOST` |
+| Port | `REDIS_PORT` |
+| Password / token | `REDIS_PASSWORD` |
+
+---
+
+## 2. Run database migrations
+
+From your local machine (or CI), apply Postgres migrations once:
+
+```bash
+git clone https://github.com/umairumar/AI-Search-Visibility-Tracker-and-Content
+cd AI-Search-Visibility-Tracker-and-Content
+pnpm install
+
+DATABASE_URL="postgresql://..." pnpm db:migrate
+```
+
+---
+
+## 3. Create the Vercel project
+
+1. Import your GitHub repo in the [Vercel dashboard](https://vercel.com/new).
+2. Set **Root Directory** to `apps/web`.
+3. Vercel reads `apps/web/vercel.json`, which installs and builds from the monorepo root:
+
+```json
+{
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm turbo build --filter=@oneglanse/web"
+}
+```
+
+4. **Framework Preset:** Next.js (auto-detected).
+
+### Build settings (if configuring manually)
+
+| Setting | Value |
+|---|---|
+| Root Directory | `apps/web` |
+| Install Command | `cd ../.. && pnpm install` |
+| Build Command | `cd ../.. && pnpm turbo build --filter=@oneglanse/web` |
+| Output Directory | *(leave default — Next.js)* |
+| Node.js Version | `20.x` or `22.x` |
+
+---
+
+## 4. Environment variables
+
+Add these in **Vercel → Project → Settings → Environment Variables** for Production (and Preview if needed).
+
+### Required
+
+```bash
+# App
+ONEGLANSE_APP_MODE=self-host
+APP_URL=https://your-app.vercel.app
+API_BASE_URL=https://your-app.vercel.app
+BETTER_AUTH_SECRET=<random-32+-chars>
+INTERNAL_CRON_SECRET=<random-32+-chars>
+
+# Postgres (Neon)
+DATABASE_URL=postgresql://user:pass@ep-....neon.tech/neondb?sslmode=require
+
+# ClickHouse
+CLICKHOUSE_URL=https://....clickhouse.cloud:8443
+CLICKHOUSE_USER=default
+CLICKHOUSE_PASSWORD=...
+CLICKHOUSE_DB=analytics
+
+# Redis (Upstash)
+REDIS_HOST=....upstash.io
+REDIS_PORT=6379
+REDIS_PASSWORD=...
+
+# LLM (analysis + content autopilot)
+OPENAI_API_KEY=sk-...
+CONTENT_LLM_PROVIDER=openai
+ANALYSIS_LLM_PROVIDER=openai
+```
+
+### Optional
+
+```bash
+ANTHROPIC_API_KEY=...          # if using Claude for analysis or content
+GOOGLE_CLIENT_ID=...           # Google sign-in
+GOOGLE_CLIENT_SECRET=...
+```
+
+Generate secrets locally:
+
+```bash
+openssl rand -base64 32   # BETTER_AUTH_SECRET
+openssl rand -base64 32   # INTERNAL_CRON_SECRET
+```
+
+After adding `APP_URL`, redeploy so Better Auth callback URLs match your production domain.
+
+---
+
+## 5. Deploy workers (required)
+
+Workers must run on an always-on host with the **same env vars** as the web app (at minimum `DATABASE_URL`, `CLICKHOUSE_*`, `REDIS_*`, `OPENAI_API_KEY`, `INTERNAL_CRON_SECRET`).
+
+### Agent worker (visibility tracking)
+
+Runs prompt collection against ChatGPT, Perplexity, etc.
+
+```bash
+pnpm install
+pnpm --filter @oneglanse/agent build
+pnpm start:worker
+```
+
+Also requires provider auth sessions (`pnpm auth`) and, on VPS, a residential proxy. See [Self-Hosted Setup](/self-hosted-setup) for provider auth upload.
+
+### Autopilot worker (content generation)
+
+Processes "Generate GEO Fix Article" jobs from the BullMQ queue.
+
+```bash
+pnpm install
+pnpm start:autopilot-worker
+```
+
+**Railway / Render tip:** create two services from the same repo — one running `pnpm start:worker`, one running `pnpm start:autopilot-worker`. Set the env vars on both.
+
+---
+
+## 6. Verify the deployment
+
+1. Open `https://your-app.vercel.app` and sign in.
+2. Create a workspace and add prompts.
+3. Confirm the agent worker picks up runs (check worker logs).
+4. On the Prompts page, click **Generate GEO Fix Article** on a weak keyword.
+5. Confirm the autopilot worker logs show job processing.
+6. Open **Autopilot** → add a WordPress integration → publish a draft article.
+
+---
+
+## Limitations on Vercel
+
+| Feature | On Vercel alone | With external workers |
+|---|---|---|
+| Web UI + tRPC | Yes | Yes |
+| Google OAuth sign-in | Yes | Yes |
+| Prompt visibility runs | No | Yes (agent worker) |
+| Content autopilot generation | No | Yes (autopilot worker) |
+| Scheduled prompt cron (`pg_cron`) | Unreliable | Use VPS Postgres or external cron hitting internal API |
+| Shopify CMS publish | No | Yes (not yet implemented in code) |
+
+---
+
+## Troubleshooting
+
+### Build fails with workspace package errors
+
+Ensure **Root Directory** is `apps/web` and install/build commands run from the monorepo root (see `apps/web/vercel.json`).
+
+### `BETTER_AUTH_SECRET` / env validation errors
+
+Set all required env vars in Vercel before deploying. Do not leave `replace-me` placeholders.
+
+### Jobs stay queued forever
+
+The autopilot worker is not running, or `REDIS_HOST` / `REDIS_PASSWORD` differ between Vercel and the worker.
+
+### CMS integration save fails
+
+`INTERNAL_CRON_SECRET` must be set on Vercel — it encrypts CMS credentials at rest.
+
+### Database connection errors from Vercel
+
+Use Neon's **pooled** connection string and append `?sslmode=require` if needed.
+
+---
+
+## Related
+
+- [Self-Hosted Setup](/self-hosted-setup) — full VPS deployment (recommended for production)
+- [Environment Variables](/environment-variables) — complete env reference
+- [Local Setup](/local-setup) — development with Docker
