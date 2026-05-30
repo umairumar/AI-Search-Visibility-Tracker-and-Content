@@ -19,6 +19,7 @@ const ServicesEnvSchema = z.object({
 	OPENAI_API_KEY: z.string().optional(),
 	ANTHROPIC_API_KEY: z.string().optional(),
 	ANALYSIS_LLM_PROVIDER: z.enum(["openai", "claude"]).default("openai"),
+	CONTENT_LLM_PROVIDER: z.enum(["openai", "claude"]).default("openai"),
 });
 
 export const env = ServicesEnvSchema.parse(process.env);

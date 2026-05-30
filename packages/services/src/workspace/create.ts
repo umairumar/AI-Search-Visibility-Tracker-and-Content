@@ -19,6 +19,7 @@ export async function createWorkspaceForTenant(
 		schedule: null,
 		enabledProviders: null,
 		selectedPromptIds: null,
+		autoPilotEnabled: false,
 		createdAt: new Date(),
 		deletedAt: null,
 	};

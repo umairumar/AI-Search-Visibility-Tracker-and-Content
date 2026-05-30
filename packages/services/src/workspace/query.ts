@@ -62,6 +62,7 @@ export async function getWorkspacesForUser(
 			schedule: schema.workspaces.schedule,
 			enabledProviders: schema.workspaces.enabledProviders,
 			selectedPromptIds: schema.workspaces.selectedPromptIds,
+			autoPilotEnabled: schema.workspaces.autoPilotEnabled,
 			createdAt: schema.workspaces.createdAt,
 			deletedAt: schema.workspaces.deletedAt,
 		})
@@ -133,6 +134,7 @@ export async function getAllWorkspacesForUser(
 				schedule: schema.workspaces.schedule,
 				enabledProviders: schema.workspaces.enabledProviders,
 				selectedPromptIds: schema.workspaces.selectedPromptIds,
+				autoPilotEnabled: schema.workspaces.autoPilotEnabled,
 				createdAt: schema.workspaces.createdAt,
 				deletedAt: schema.workspaces.deletedAt,
 			},
